@@ -1,12 +1,12 @@
-import 'package:spending/src/domain/expenses/commands/create_expense_command.dart';
+import 'package:spending/src/domain/expense/commands/create_expense_command.dart';
 import 'package:spending/src/infrastructure/commands/command.dart';
 import 'package:spending/src/infrastructure/commands/command_result.dart';
 import 'package:spending/src/infrastructure/database_provider.dart';
-import 'package:spending/src/infrastructure/expense_repository.dart';
+import 'package:spending/src/domain/expense/expense_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CommandMediator {
-  Database _database;
+  final Database _database;
 
   static CommandMediator? _instance;
 

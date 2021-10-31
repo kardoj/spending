@@ -1,7 +1,8 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
-import 'package:spending/src/domain/expenses/commands/create_expense_command.dart';
 import 'package:spending/src/infrastructure/commands/command_mediator.dart';
+
+import 'domain/expense/commands/create_expense_command.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -56,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _incrementCounter() async {
     final mediator = await CommandMediator.getInstance();
-    final commandResult = await mediator.send(CreateExpenseCommand(Decimal.parse("11"), 20, DateTime.now()));
+    final commandResult = await mediator.send(CreateExpenseCommand(Decimal.parse("11"), 1, DateTime.now()));
 
     setState(() {
       // This call to setState tells the Flutter framework that something has
