@@ -1,5 +1,4 @@
 import 'package:decimal/decimal.dart';
-import 'package:flutter/foundation.dart';
 import 'package:spending/src/infrastructure/commands/command.dart';
 import 'package:spending/src/infrastructure/commands/command_handler.dart';
 import 'package:spending/src/infrastructure/commands/command_result.dart';

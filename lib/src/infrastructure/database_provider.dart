@@ -25,6 +25,10 @@ class DatabaseProvider {
   }
 
   static Future<void> _seedInitialData(Database database, int version) async {
+    await _seedExpenseCategories(database, version);
+  }
+
+  static Future<void> _seedExpenseCategories(Database database, int version) async {
     await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Food' });
     await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Lunch' });
     await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Home' });
