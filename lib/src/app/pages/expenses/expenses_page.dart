@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:spending/src/app/components/formatters/date_formatter.dart';
+import 'package:spending/src/app/components/formatters/money_formatter.dart';
 import 'package:spending/src/app/components/heading.dart';
 import 'package:spending/src/app/pages/expenses/create_expense_page.dart';
 import 'package:spending/src/domain/expense/queries/all_expenses_query.dart';
@@ -92,9 +93,9 @@ class _ExpenseListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(_amount.toString(), textScaleFactor: 1.2),
+      title: Text(MoneyFormatter.format(_amount), textScaleFactor: 1.2),
       subtitle: Text(_expenseCategoryName),
-      trailing: Text(DateFormatter.formatDate(_occurredOn))
+      trailing: Text(DateFormatter.format(_occurredOn))
     );
   }
 }

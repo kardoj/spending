@@ -50,7 +50,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   DateTime? _occurredOn = DateTime.now();
   final TextEditingController _occurredOnController = TextEditingController(
-      text: DateFormatter.formatDate(DateTime.now()));
+      text: DateFormatter.format(DateTime.now()));
 
   @override
   void initState() {
@@ -145,7 +145,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
                   setState(() {
                     _occurredOn = pickedDate;
-                    _occurredOnController.text = DateFormatter.formatDate(pickedDate);
+                    _occurredOnController.text = DateFormatter.format(pickedDate);
                   });
                 },
               ),

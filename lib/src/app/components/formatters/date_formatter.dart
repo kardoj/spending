@@ -1,5 +1,5 @@
 class DateFormatter {
-  static formatDate(DateTime? date) {
+  static format(DateTime? date) {
     if (date == null) {
       return '';
     }

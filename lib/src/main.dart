@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'app/pages/expenses/create_expense_page.dart';
 
@@ -11,6 +12,10 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp
+    ]);
+
     return MaterialApp(
       theme: ThemeData.from(
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.red)),

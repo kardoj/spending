@@ -15,7 +15,7 @@ class Expense extends Entity {
   static const String idFieldName = 'id';
   static const String amountFieldName = 'amount';
   static const String expenseCategoryIdFieldName = 'expense_category_id';
-  static const String occurredOnFieldName = 'occurred_at';
+  static const String occurredOnFieldName = 'occurred_on';
   static const String createdAtFieldName = 'created_at';
 
   static String createTableSql() {

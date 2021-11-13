@@ -9,7 +9,7 @@ class ExpenseRepository {
 
   Future<void> create(Decimal amount, int expenseCategoryId, DateTime occurredOn) async {
     await _database.insert(Expense.tableName, {
-      Expense.amountFieldName: amount.toStringAsFixed(2),
+      Expense.amountFieldName: amount.toString(),
       Expense.expenseCategoryIdFieldName: expenseCategoryId,
       Expense.occurredOnFieldName: occurredOn.millisecondsSinceEpoch,
       Expense.createdAtFieldName: DateTime.now().millisecondsSinceEpoch // TODO: Should be in UTC? MillisecondsSinceEpoch should be in a helper? Base class helper?

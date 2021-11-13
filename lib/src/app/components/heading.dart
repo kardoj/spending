@@ -9,7 +9,9 @@ class Heading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
         alignment: Alignment.center,
-        child: Text(_text, textScaleFactor: 3)
+        child: Padding(
+          child: Text(_text, textScaleFactor: 3),
+          padding: const EdgeInsets.only(top: 20))
     );
   }
 }
