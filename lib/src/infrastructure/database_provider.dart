@@ -3,13 +3,12 @@ import 'package:spending/src/domain/expense/expense.dart';
 import 'package:spending/src/domain/expense_category/expense_category.dart';
 import 'package:sqflite/sqflite.dart';
 
-// TODO: Äkki see võiks olla ka lihtsalt Database ja getInstance singleton? Siin ei ole sisulisi erinevusi teiste singleton'idega.
 class DatabaseProvider {
   static Database? _database;
 
   DatabaseProvider._();
 
-  static Future<Database> provide() async {
+  static Future<Database> getInstance() async {
     _database ??= await openDatabase(Configuration.databaseFileName, version: 1,
       onOpen: (Database database) async { await database.execute('PRAGMA foreign_keys = ON;'); },
       onCreate: (Database database, int version) async {

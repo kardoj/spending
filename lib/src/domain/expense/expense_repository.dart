@@ -1,11 +1,19 @@
 import 'package:decimal/decimal.dart';
 import 'package:spending/src/domain/expense/expense.dart';
+import 'package:spending/src/infrastructure/database_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ExpenseRepository {
   final Database _database;
 
-  ExpenseRepository(this._database);
+  static ExpenseRepository? _instance;
+
+  ExpenseRepository._(this._database);
+
+  static Future<ExpenseRepository> getInstance() async {
+    final database = await DatabaseProvider.getInstance();
+    return _instance ??= ExpenseRepository._(database);
+  }
 
   Future<void> create(Decimal amount, int expenseCategoryId, DateTime occurredOn) async {
     await _database.insert(Expense.tableName, {

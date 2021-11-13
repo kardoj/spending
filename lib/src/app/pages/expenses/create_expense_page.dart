@@ -3,14 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:spending/src/app/components/formatters/date_formatter.dart';
 import 'package:spending/src/app/components/forms/money_input_formatter.dart';
 import 'package:spending/src/app/components/heading.dart';
-import 'package:spending/src/domain/expense/commands/create_expense_command.dart';
-import 'package:spending/src/domain/expense_category/queries/all_expense_categories_query.dart';
-import 'package:spending/src/infrastructure/commands/command_mediator.dart';
-import 'package:spending/src/infrastructure/queries/query_mediator.dart';
 import 'package:collection/collection.dart';
-
-// TODO: Täpsustada, miks osa asju tuleb läbi "package" importida ja osa saab niimoodi?
-import 'expenses_page.dart';
+import 'package:spending/src/app/pages/expenses/expenses_page.dart';
+import 'package:spending/src/domain/expense/expense_repository.dart';
+import 'package:spending/src/domain/expense_category/expense_category_repository.dart';
 
 class CreateExpensePage extends StatelessWidget {
   const CreateExpensePage({Key? key}) : super(key: key);
@@ -40,8 +36,8 @@ class ExpenseForm extends StatefulWidget {
 class _ExpenseFormState extends State<ExpenseForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  late final QueryMediator _queryMediator;
-  late final CommandMediator _commandMediator;
+  late final ExpenseCategoryRepository _expenseCategoryRepository;
+  late final ExpenseRepository _expenseRepository;
 
   List<DropdownMenuItem<int>> _expenseCategoryOptions = [];
 
@@ -64,12 +60,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
   }
 
   Future<void> _initServices() async {
-    _queryMediator = await QueryMediator.getInstance();
-    _commandMediator = await CommandMediator.getInstance();
+    _expenseCategoryRepository = await ExpenseCategoryRepository.getInstance();
+    _expenseRepository = await ExpenseRepository.getInstance();
   }
 
   Future<void> _initExpenseCategoryOptions() async {
-    var expenseCategories = await _queryMediator.send(AllExpenseCategoriesQuery());
+    var expenseCategories = await _expenseCategoryRepository.getAll();
 
     setState(() {
       _expenseCategoryOptions = expenseCategories
@@ -81,7 +77,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   }
 
   Future<void> _createExpenseAndNavigateToExpenses() async {
-    await _commandMediator.send(CreateExpenseCommand(Decimal.parse(_amount!), _selectedExpenseCategoryId!, _occurredOn!));
+    await _expenseRepository.create(Decimal.parse(_amount!), _selectedExpenseCategoryId!, _occurredOn!);
     await Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage()));
   }
 

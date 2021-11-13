@@ -4,9 +4,8 @@ import 'package:spending/src/app/components/formatters/date_formatter.dart';
 import 'package:spending/src/app/components/formatters/money_formatter.dart';
 import 'package:spending/src/app/components/heading.dart';
 import 'package:spending/src/app/pages/expenses/create_expense_page.dart';
-import 'package:spending/src/domain/expense/queries/all_expenses_query.dart';
-import 'package:spending/src/domain/expense_category/queries/all_expense_categories_query.dart';
-import 'package:spending/src/infrastructure/queries/query_mediator.dart';
+import 'package:spending/src/domain/expense/expense_repository.dart';
+import 'package:spending/src/domain/expense_category/expense_category_repository.dart';
 
 class ExpensesPage extends StatelessWidget {
   const ExpensesPage({Key? key}) : super(key: key);
@@ -32,7 +31,8 @@ class ExpenseList extends StatefulWidget {
 }
 
 class _ExpenseListState extends State<ExpenseList> {
-  late final QueryMediator _queryMediator;
+  late final ExpenseCategoryRepository _expenseCategoryRepository;
+  late final ExpenseRepository _expenseRepository;
 
   List<_ExpenseListItem> _items = [];
 
@@ -48,14 +48,15 @@ class _ExpenseListState extends State<ExpenseList> {
   }
 
   Future<void> _initServices() async {
-    _queryMediator = await QueryMediator.getInstance();
+    _expenseCategoryRepository = await ExpenseCategoryRepository.getInstance();
+    _expenseRepository = await ExpenseRepository.getInstance();
   }
 
   Future<void> _initItems() async {
     // TODO: Võib-olla lisada Expense'le ka kogu ExpenseCategory objekt kui teda välja küsime?
-    var expenseCategories = await _queryMediator.send(AllExpenseCategoriesQuery());
+    var expenseCategories = await _expenseCategoryRepository.getAll();
     var expenseCategoryNameMap = { for (var x in expenseCategories) x.id : x.name };
-    var expenses = await _queryMediator.send2(AllExpensesQuery());
+    var expenses = await _expenseRepository.getAll();
 
 
     setState(() {

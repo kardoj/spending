@@ -1,10 +1,18 @@
 import 'package:spending/src/domain/expense_category/expense_category.dart';
+import 'package:spending/src/infrastructure/database_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ExpenseCategoryRepository {
+  static ExpenseCategoryRepository? _instance;
+
   final Database _database;
 
-  ExpenseCategoryRepository(this._database);
+  ExpenseCategoryRepository._(this._database);
+
+  static Future<ExpenseCategoryRepository> getInstance() async {
+    final database = await DatabaseProvider.getInstance();
+    return _instance ??= ExpenseCategoryRepository._(database);
+  }
 
   Future<List<ExpenseCategory>> getAll() async {
     final results = await _database
