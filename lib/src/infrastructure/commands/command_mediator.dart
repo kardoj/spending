@@ -17,6 +17,9 @@ class CommandMediator {
     return _instance ??= CommandMediator._(database);
   }
 
+  // TODO: CommandResult<bool> on kasutu, sest bool (success või mitte) on juba CommandResult ise.
+  // TODO: Mõte: Kuni ei ole mängus vajadust command'ist mingit tulemust tagastada võiks CommandResult olla mitte generic.
+  // TODO: CommandResult võiks vea puhul sisaldada kollektsiooni teadetest.
   Future<CommandResult<bool>> send<TCommand extends Command<bool>>(TCommand command) async {
     if (command is CreateExpenseCommand) {
       final expenseRepository = ExpenseRepository(_database);

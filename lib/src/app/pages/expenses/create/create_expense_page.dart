@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:spending/src/app/components/formatters/date_formatter.dart';
 import 'package:spending/src/app/components/forms/money_input_formatter.dart';
+import 'package:spending/src/domain/expense_category/queries/all_expense_categories_query.dart';
+import 'package:spending/src/infrastructure/queries/query_mediator.dart';
+import 'package:collection/collection.dart';
 
 class CreateExpensePage extends StatelessWidget {
   const CreateExpensePage({Key? key}) : super(key: key);
@@ -26,18 +29,44 @@ class ExpenseForm extends StatefulWidget {
 class _ExpenseFormState extends State<ExpenseForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final List<DropdownMenuItem<int>> _expenseCategories = [
-    const DropdownMenuItem(value: 1, child: Text("Üks")),
-    const DropdownMenuItem(value: 2, child: Text("Kaks")),
-    const DropdownMenuItem(value: 3, child: Text("Kolm"))
-  ];
+  late final QueryMediator _queryMediator;
 
-  int _selectedExpenseCategoryId = 1;
-  String _amount = '';
+  late List<DropdownMenuItem<int>> _expenseCategoryOptions = [];
+
+  int? _selectedExpenseCategoryId;
+  String? _amount;
 
   DateTime? _occurredOn = DateTime.now();
   final TextEditingController _occurredOnController = TextEditingController(
       text: DateFormatter.formatDate(DateTime.now()));
+
+  @override
+  void initState() {
+    super.initState();
+    _initState();
+  }
+
+  Future<void> _initState() async {
+    await _initServices();
+    await _initExpenseCategoryOptions();
+  }
+
+  Future<void> _initServices() async {
+    _queryMediator = await QueryMediator.getInstance();
+  }
+
+  Future<void> _initExpenseCategoryOptions() async {
+    var expenseCategories = await _queryMediator.send(AllExpenseCategoriesQuery());
+    expenseCategories.sort((a, b) => a.name.compareTo(b.name));
+
+    setState(() {
+      _expenseCategoryOptions = expenseCategories
+          .map((x) => DropdownMenuItem(value: x.id, child: Text(x.name)))
+          .toList();
+
+      _selectedExpenseCategoryId = expenseCategories.firstWhereOrNull((x) => x.name == 'Food')?.id;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +83,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
               padding: formElementPadding,
               child: DropdownButtonFormField<int>(
                 decoration: const InputDecoration(labelText: 'Expense category'),
-                items: _expenseCategories,
+                items: _expenseCategoryOptions,
                 value: _selectedExpenseCategoryId,
+                validator: (int? value) => value == null ? 'Expense category is required' : null,
                 onChanged: (int? newValue) {
                   setState(() {
                     _selectedExpenseCategoryId = newValue!;

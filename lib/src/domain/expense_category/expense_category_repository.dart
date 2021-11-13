@@ -6,7 +6,7 @@ class ExpenseCategoryRepository {
 
   ExpenseCategoryRepository(this._database);
 
-  Future<List<ExpenseCategory>> getAll(int id) async {
+  Future<List<ExpenseCategory>> getAll() async {
     final results = await _database
         .rawQuery('select * from ' + ExpenseCategory.tableName + ' order by ' + ExpenseCategory.nameFieldName + ' asc');
 

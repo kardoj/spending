@@ -3,6 +3,7 @@ import 'package:spending/src/domain/expense/expense.dart';
 import 'package:spending/src/domain/expense_category/expense_category.dart';
 import 'package:sqflite/sqflite.dart';
 
+// TODO: Äkki see võiks olla ka lihtsalt Database ja getInstance singleton? Siin ei ole sisulisi erinevusi teiste singleton'idega.
 class DatabaseProvider {
   static Database? _database;
 
@@ -35,5 +36,8 @@ class DatabaseProvider {
     await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Car' });
     await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Fuel' });
     await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Hobbies' });
+    await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Entertainment' });
+    await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Health' });
+    await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Alc' });
   }
 }
