@@ -38,6 +38,7 @@ class DatabaseProvider {
     await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Hobbies' });
     await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Entertainment' });
     await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Health' });
-    await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Alc' });
+    await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Alcohol' });
+    await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Bills' });
   }
 }

@@ -3,7 +3,7 @@ import 'package:spending/src/domain/expense_category/expense_category_repository
 import 'package:spending/src/infrastructure/queries/query.dart';
 import 'package:spending/src/infrastructure/queries/query_handler.dart';
 
-class AllExpenseCategoriesQuery implements Query<List<ExpenseCategory>> {
+class AllExpenseCategoriesQuery extends Query<List<ExpenseCategory>> {
 }
 
 class AllExpenseCategoriesQueryHandler implements QueryHandler<AllExpenseCategoriesQuery, List<ExpenseCategory>> {

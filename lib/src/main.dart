@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app/pages/expenses/create/create_expense_page.dart';
+import 'app/pages/expenses/create_expense_page.dart';
 
 void main() async {
   runApp(const App());

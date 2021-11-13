@@ -7,11 +7,11 @@ class ExpenseRepository {
 
   ExpenseRepository(this._database);
 
-  Future<void> create(Decimal amount, int expenseCategoryId, DateTime occurredAt) async {
+  Future<void> create(Decimal amount, int expenseCategoryId, DateTime occurredOn) async {
     await _database.insert(Expense.tableName, {
-      Expense.amountFieldName: amount.toString(),
+      Expense.amountFieldName: amount.toStringAsFixed(2),
       Expense.expenseCategoryIdFieldName: expenseCategoryId,
-      Expense.occurredAtFieldName: occurredAt.millisecondsSinceEpoch,
+      Expense.occurredOnFieldName: occurredOn.millisecondsSinceEpoch,
       Expense.createdAtFieldName: DateTime.now().millisecondsSinceEpoch // TODO: Should be in UTC? MillisecondsSinceEpoch should be in a helper? Base class helper?
     });
   }
@@ -22,13 +22,25 @@ class ExpenseRepository {
       return null;
     }
 
-    final expenseData = results.single;
+    final result = results.single;
     return Expense(
-      expenseData[Expense.idFieldName] as int,
-      Decimal.parse(expenseData[Expense.amountFieldName] as String),
-      expenseData[Expense.expenseCategoryIdFieldName] as int,
-      DateTime.fromMillisecondsSinceEpoch(expenseData[Expense.occurredAtFieldName] as int),
-      DateTime.fromMillisecondsSinceEpoch(expenseData[Expense.createdAtFieldName] as int),
+      result[Expense.idFieldName] as int,
+      Decimal.parse(result[Expense.amountFieldName] as String),
+      result[Expense.expenseCategoryIdFieldName] as int,
+      DateTime.fromMillisecondsSinceEpoch(result[Expense.occurredOnFieldName] as int),
+      DateTime.fromMillisecondsSinceEpoch(result[Expense.createdAtFieldName] as int)
     );
+  }
+
+  Future<List<Expense>> getAll() async {
+    final results = await _database
+      .rawQuery('select * from ' + Expense.tableName + ' order by ' + Expense.occurredOnFieldName + ' desc, ' + Expense.idFieldName + ' desc');
+
+    return results.map((result) => Expense(
+      result[Expense.idFieldName] as int,
+      Decimal.parse(result[Expense.amountFieldName] as String),
+      result[Expense.expenseCategoryIdFieldName] as int,
+      DateTime.fromMillisecondsSinceEpoch(result[Expense.occurredOnFieldName] as int),
+      DateTime.fromMillisecondsSinceEpoch(result[Expense.createdAtFieldName] as int))).toList();
   }
 }

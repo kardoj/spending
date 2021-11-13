@@ -4,12 +4,12 @@ import 'package:spending/src/infrastructure/commands/command_handler.dart';
 import 'package:spending/src/infrastructure/commands/command_result.dart';
 import 'package:spending/src/domain/expense/expense_repository.dart';
 
-class CreateExpenseCommand implements Command<bool> {
+class CreateExpenseCommand extends Command<bool> {
   final Decimal amount;
   final int expenseCategoryId;
-  final DateTime occurredAt;
+  final DateTime occurredOn;
 
-  CreateExpenseCommand(this.amount, this.expenseCategoryId, this.occurredAt);
+  CreateExpenseCommand(this.amount, this.expenseCategoryId, this.occurredOn);
 }
 
 class CreateExpenseCommandHandler implements CommandHandler<CreateExpenseCommand> {
@@ -19,7 +19,7 @@ class CreateExpenseCommandHandler implements CommandHandler<CreateExpenseCommand
 
   @override
   Future<CommandResult<bool>> handle(CreateExpenseCommand command) async {
-    await _repository.create(command.amount, command.expenseCategoryId, command.occurredAt);
+    await _repository.create(command.amount, command.expenseCategoryId, command.occurredOn);
     return CommandResult.success(true);
   }
 }

@@ -1,9 +1,16 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:spending/src/app/components/formatters/date_formatter.dart';
 import 'package:spending/src/app/components/forms/money_input_formatter.dart';
+import 'package:spending/src/app/components/heading.dart';
+import 'package:spending/src/domain/expense/commands/create_expense_command.dart';
 import 'package:spending/src/domain/expense_category/queries/all_expense_categories_query.dart';
+import 'package:spending/src/infrastructure/commands/command_mediator.dart';
 import 'package:spending/src/infrastructure/queries/query_mediator.dart';
 import 'package:collection/collection.dart';
+
+// TODO: Täpsustada, miks osa asju tuleb läbi "package" importida ja osa saab niimoodi?
+import 'expenses_page.dart';
 
 class CreateExpensePage extends StatelessWidget {
   const CreateExpensePage({Key? key}) : super(key: key);
@@ -30,8 +37,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late final QueryMediator _queryMediator;
+  late final CommandMediator _commandMediator;
 
-  late List<DropdownMenuItem<int>> _expenseCategoryOptions = [];
+  List<DropdownMenuItem<int>> _expenseCategoryOptions = [];
 
   int? _selectedExpenseCategoryId;
   String? _amount;
@@ -53,11 +61,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   Future<void> _initServices() async {
     _queryMediator = await QueryMediator.getInstance();
+    _commandMediator = await CommandMediator.getInstance();
   }
 
   Future<void> _initExpenseCategoryOptions() async {
     var expenseCategories = await _queryMediator.send(AllExpenseCategoriesQuery());
-    expenseCategories.sort((a, b) => a.name.compareTo(b.name));
 
     setState(() {
       _expenseCategoryOptions = expenseCategories
@@ -68,9 +76,14 @@ class _ExpenseFormState extends State<ExpenseForm> {
     });
   }
 
+  Future<void> _createExpenseAndNavigateToExpenses() async {
+    await _commandMediator.send(CreateExpenseCommand(Decimal.parse(_amount!), _selectedExpenseCategoryId!, _occurredOn!));
+    await Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
-    const formElementPadding = EdgeInsets.symmetric(vertical: 5);
+    const formElementPadding = EdgeInsets.symmetric(vertical: 5, horizontal: 8);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
       child: Form(
@@ -79,6 +92,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            const Heading("Register expense"),
             Padding(
               padding: formElementPadding,
               child: DropdownButtonFormField<int>(
@@ -139,7 +153,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 child: ElevatedButton(
                   child: const Text("Save"),
                   onPressed: () {
-                    _formKey.currentState!.validate();
+                    if (_formKey.currentState!.validate()) {
+                      _createExpenseAndNavigateToExpenses();
+                    }
                   },
                 ),
               )
