@@ -21,7 +21,11 @@ class CreateExpensePage extends StatelessWidget {
       body: Container(
         alignment: Alignment.bottomCenter,
         child: const ExpenseForm()
-      )
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage())),
+        label: const Text("View expenses")),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }
 }

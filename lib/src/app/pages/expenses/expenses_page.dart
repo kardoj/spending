@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:spending/src/app/components/formatters/date_formatter.dart';
 import 'package:spending/src/app/components/heading.dart';
+import 'package:spending/src/app/pages/expenses/create_expense_page.dart';
 import 'package:spending/src/domain/expense/queries/all_expenses_query.dart';
 import 'package:spending/src/domain/expense_category/queries/all_expense_categories_query.dart';
 import 'package:spending/src/infrastructure/queries/query_mediator.dart';
@@ -11,7 +12,14 @@ class ExpensesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: ExpenseList());
+    return Scaffold(
+      body: const ExpenseList(),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const CreateExpensePage())),
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
   }
 }
 
