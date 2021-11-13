@@ -12,9 +12,9 @@ class ExpenseCategory extends Entity {
   static const String nameFieldName = 'name';
 
   static String createTableSql() {
-    return 'create table expense_category ('
-        'id integer primary key autoincrement,'
-        'name text not null'
+    return 'create table $tableName ('
+        '$idFieldName integer primary key autoincrement,'
+        '$nameFieldName text not null'
         ')';
   }
 }

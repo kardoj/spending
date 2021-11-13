@@ -1,13 +1,14 @@
 import 'package:decimal/decimal.dart';
 import 'package:spending/src/domain/entity.dart';
+import 'package:spending/src/domain/expense_category/expense_category.dart';
 
 class Expense extends Entity {
   final Decimal amount;
-  final int expenseCategoryId;
+  final ExpenseCategory expenseCategory;
   final DateTime occurredOn;
   final DateTime createdAt;
 
-  Expense(int id, this.amount, this.expenseCategoryId, this.occurredOn, this.createdAt)
+  Expense(int id, this.amount, this.expenseCategory, this.occurredOn, this.createdAt)
       : super(id);
 
   static const String tableName = 'expense';
@@ -19,13 +20,13 @@ class Expense extends Entity {
   static const String createdAtFieldName = 'created_at';
 
   static String createTableSql() {
-    return 'create table expense ('
-        'id integer primary key autoincrement,'
-        'amount text not null,'
-        'expense_category_id integer not null,'
-        'occurred_on int not null,'
-        'created_at int not null,'
-        'foreign key (expense_category_id) references expense_category(id)'
+    return 'create table $tableName ('
+        '$idFieldName integer primary key autoincrement,'
+        '$amountFieldName text not null,'
+        '$expenseCategoryIdFieldName integer not null,'
+        '$occurredOnFieldName int not null,'
+        '$createdAtFieldName int not null,'
+        'foreign key ($expenseCategoryIdFieldName) references ${ExpenseCategory.tableName}(${ExpenseCategory.idFieldName})'
         ')';
   }
 }

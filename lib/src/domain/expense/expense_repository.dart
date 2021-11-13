@@ -1,5 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:spending/src/domain/expense/expense.dart';
+import 'package:spending/src/domain/expense_category/expense_category.dart';
 import 'package:spending/src/infrastructure/database_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -24,31 +25,28 @@ class ExpenseRepository {
     });
   }
 
-  Future<Expense?> get(int id) async {
-    final results = await _database.rawQuery('select * from ' + Expense.tableName + ' where id = ?', [id]);
-    if (results.isEmpty) {
-      return null;
-    }
-
-    final result = results.single;
-    return Expense(
-      result[Expense.idFieldName] as int,
-      Decimal.parse(result[Expense.amountFieldName] as String),
-      result[Expense.expenseCategoryIdFieldName] as int,
-      DateTime.fromMillisecondsSinceEpoch(result[Expense.occurredOnFieldName] as int),
-      DateTime.fromMillisecondsSinceEpoch(result[Expense.createdAtFieldName] as int)
-    );
-  }
-
   Future<List<Expense>> getAll() async {
-    final results = await _database
-      .rawQuery('select * from ' + Expense.tableName + ' order by ' + Expense.occurredOnFieldName + ' desc, ' + Expense.idFieldName + ' desc');
+    final results = await _database.rawQuery(
+      ' select '
+        ' ${Expense.tableName}.${Expense.idFieldName} as expense_id, '
+        ' ${Expense.tableName}.${Expense.amountFieldName} as expense_amount, '
+        ' ${Expense.tableName}.${Expense.occurredOnFieldName} as expense_occurred_on, '
+        ' ${Expense.tableName}.${Expense.createdAtFieldName} as expense_created_at, '
+        ' ${ExpenseCategory.tableName}.${ExpenseCategory.idFieldName} as expense_category_id, '
+        ' ${ExpenseCategory.tableName}.${ExpenseCategory.nameFieldName} as expense_category_name '
+      ' from ${Expense.tableName} '
+      ' inner join ${ExpenseCategory.tableName} '
+      ' on ${ExpenseCategory.tableName}.${ExpenseCategory.idFieldName}=${Expense.tableName}.${Expense.expenseCategoryIdFieldName} '
+      ' order by expense_occurred_on desc, expense_id desc '
+    );
 
     return results.map((result) => Expense(
-      result[Expense.idFieldName] as int,
-      Decimal.parse(result[Expense.amountFieldName] as String),
-      result[Expense.expenseCategoryIdFieldName] as int,
-      DateTime.fromMillisecondsSinceEpoch(result[Expense.occurredOnFieldName] as int),
-      DateTime.fromMillisecondsSinceEpoch(result[Expense.createdAtFieldName] as int))).toList();
+      result['expense_id'] as int,
+      Decimal.parse(result['expense_amount'] as String),
+      ExpenseCategory(
+        result['expense_category_id'] as int,
+        result['expense_category_name'] as String),
+      DateTime.fromMillisecondsSinceEpoch(result['expense_occurred_on'] as int),
+      DateTime.fromMillisecondsSinceEpoch(result['expense_created_at'] as int))).toList();
   }
 }

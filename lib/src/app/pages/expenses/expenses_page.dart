@@ -53,15 +53,11 @@ class _ExpenseListState extends State<ExpenseList> {
   }
 
   Future<void> _initItems() async {
-    // TODO: Võib-olla lisada Expense'le ka kogu ExpenseCategory objekt kui teda välja küsime?
-    var expenseCategories = await _expenseCategoryRepository.getAll();
-    var expenseCategoryNameMap = { for (var x in expenseCategories) x.id : x.name };
     var expenses = await _expenseRepository.getAll();
-
 
     setState(() {
       _items = expenses
-          .map((x) => _ExpenseListItem(x.amount, expenseCategoryNameMap[x.expenseCategoryId]!, x.occurredOn))
+          .map((x) => _ExpenseListItem(x.amount, x.expenseCategory.name, x.occurredOn))
           .toList();
     });
   }
