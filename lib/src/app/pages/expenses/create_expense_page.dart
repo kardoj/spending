@@ -96,6 +96,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             Padding(
               padding: formElementPadding,
               child: DropdownButtonFormField<int>(
+                key: const ValueKey("create-expense-category-input"),
                 decoration: const InputDecoration(labelText: 'Expense category'),
                 items: _expenseCategoryOptions,
                 value: _selectedExpenseCategoryId,
@@ -110,6 +111,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             Padding(
               padding: formElementPadding,
               child: TextFormField(
+                key: const ValueKey("create-expense-amount-input"),
                 decoration: const InputDecoration(labelText: 'Amount'),
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [MoneyInputFormatter()],
@@ -125,6 +127,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             Padding(
               padding: formElementPadding,
               child: TextFormField(
+                key: const ValueKey("create-expense-occurred-on-input"),
                 controller: _occurredOnController,
                 decoration: const InputDecoration(labelText: "Occurred on"),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
