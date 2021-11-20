@@ -4,6 +4,10 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:spending/src/main.dart' as app;
 
+const _expenseCategoryInputKey = ValueKey('create-expense-category-input');
+const _amountInputKey = ValueKey('create-expense-amount-input');
+const _occurredOnInputKey = ValueKey('create-expense-occurred-on-input');
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   WidgetController.hitTestWarningShouldBeFatal = true;
@@ -22,7 +26,7 @@ void main() {
         expect(find.text(category), category == defaultCategory ? findsOneWidget : findsNothing);
       }
 
-      await tester.tap(find.byKey(const ValueKey('create-expense-category-input')));
+      await tester.tap(find.byKey(_expenseCategoryInputKey));
       await tester.pumpAndSettle();
 
       expect(find.text(defaultCategory), findsOneWidget);
@@ -45,7 +49,7 @@ void main() {
       app.main();
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const ValueKey('create-expense-occurred-on-input')));
+      await tester.tap(find.byKey(_occurredOnInputKey));
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('CANCEL'));
@@ -67,13 +71,10 @@ void main() {
       // 'Food' category is pre-selected.
       // TODO: Try to select category to see if it's fixed.
 
-      await tester.tap(find.byKey(const ValueKey('create-expense-amount-input')));
+      await tester.enterText(find.byKey(_amountInputKey), '971.59');
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byKey(const ValueKey('create-expense-amount-input')), '971.59');
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const ValueKey('create-expense-occurred-on-input')));
+      await tester.tap(find.byKey(_occurredOnInputKey));
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('12'));
