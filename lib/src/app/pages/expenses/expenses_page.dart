@@ -5,7 +5,6 @@ import 'package:spending/src/app/components/formatters/money_formatter.dart';
 import 'package:spending/src/app/components/heading.dart';
 import 'package:spending/src/app/pages/expenses/create_expense_page.dart';
 import 'package:spending/src/domain/expense/expense_repository.dart';
-import 'package:spending/src/domain/expense_category/expense_category_repository.dart';
 
 class ExpensesPage extends StatelessWidget {
   const ExpensesPage({Key? key}) : super(key: key);
@@ -31,7 +30,6 @@ class ExpenseList extends StatefulWidget {
 }
 
 class _ExpenseListState extends State<ExpenseList> {
-  late final ExpenseCategoryRepository _expenseCategoryRepository;
   late final ExpenseRepository _expenseRepository;
 
   List<_ExpenseListItem> _items = [];
@@ -48,7 +46,6 @@ class _ExpenseListState extends State<ExpenseList> {
   }
 
   Future<void> _initServices() async {
-    _expenseCategoryRepository = await ExpenseCategoryRepository.getInstance();
     _expenseRepository = await ExpenseRepository.getInstance();
   }
 
@@ -57,8 +54,16 @@ class _ExpenseListState extends State<ExpenseList> {
 
     setState(() {
       _items = expenses
-          .map((x) => _ExpenseListItem(x.amount, x.expenseCategory.name, x.occurredOn))
+          .map((x) => _ExpenseListItem(x.id, x.amount, x.expenseCategory.name, x.occurredOn, _deleteExpense))
           .toList();
+    });
+  }
+
+  Future<void> _deleteExpense(int id) async {
+    await _expenseRepository.delete(id);
+
+    setState(() {
+      _items.removeWhere((x) => x.id == id);
     });
   }
 
@@ -81,18 +86,47 @@ class _ExpenseListState extends State<ExpenseList> {
 }
 
 class _ExpenseListItem extends StatelessWidget {
+  final int _id;
   final Decimal _amount;
   final String _expenseCategoryName;
   final DateTime _occurredOn;
+  final Future<void> Function(int id) _deleteExpense;
 
-  const _ExpenseListItem(this._amount, this._expenseCategoryName, this._occurredOn);
+  get id => _id;
+
+  const _ExpenseListItem(this._id, this._amount, this._expenseCategoryName, this._occurredOn, this._deleteExpense);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(MoneyFormatter.format(_amount), textScaleFactor: 1.2),
       subtitle: Text(_expenseCategoryName),
-      trailing: Text(DateFormatter.format(_occurredOn))
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(DateFormatter.format(_occurredOn)),
+          IconButton(
+            padding: EdgeInsets.zero,
+            icon: const Icon(Icons.delete_outline),
+            onPressed: () async {
+              final deleteConfirmed = await showDialog(context: context, builder: (context) {
+                return AlertDialog(
+                  title: const Text('Delete expense?'),
+                  content: Text('${MoneyFormatter.format(_amount)} spent on "$_expenseCategoryName" on ${DateFormatter.format(_occurredOn)}'),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('CANCEL')),
+                    TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('DELETE'))
+                  ],
+                );
+              });
+
+              if (deleteConfirmed) {
+                await _deleteExpense(_id);
+              }
+            }
+          )
+        ],
+      )
     );
   }
 }

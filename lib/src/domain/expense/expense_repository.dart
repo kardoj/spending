@@ -49,4 +49,8 @@ class ExpenseRepository {
       DateTime.fromMillisecondsSinceEpoch(result['expense_occurred_on'] as int),
       DateTime.fromMillisecondsSinceEpoch(result['expense_created_at'] as int))).toList();
   }
+
+  Future<void> delete(int id) async {
+    await _database.delete(Expense.tableName, where: '${Expense.idFieldName} = ?', whereArgs: [id]);
+  }
 }
