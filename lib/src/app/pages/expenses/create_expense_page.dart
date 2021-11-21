@@ -17,11 +17,7 @@ class CreateExpensePage extends StatelessWidget {
       body: Container(
         alignment: Alignment.bottomCenter,
         child: const ExpenseForm()
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage())),
-        label: const Text("View expenses")),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      )
     );
   }
 }
@@ -151,16 +147,23 @@ class _ExpenseFormState extends State<ExpenseForm> {
             ),
             Padding(
               padding: formElementPadding,
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: ElevatedButton(
-                  child: const Text("Save"),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _createExpenseAndNavigateToExpenses();
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    child: const Text('View expenses'),
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant)),
+                    onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage()))
+                  ),
+                  ElevatedButton(
+                    child: const Text('Save'),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _createExpenseAndNavigateToExpenses();
+                      }
                     }
-                  },
-                ),
+                  )
+                ]
               )
             )
           ]
