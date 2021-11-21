@@ -88,7 +88,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Heading("Register expense"),
+            const Heading("New expense"),
             Padding(
               padding: formElementPadding,
               child: DropdownButtonFormField<int>(
