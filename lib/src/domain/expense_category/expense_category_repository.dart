@@ -1,8 +1,9 @@
 import 'package:spending/src/domain/expense_category/expense_category.dart';
 import 'package:spending/src/infrastructure/database_provider.dart';
+import 'package:spending/src/infrastructure/repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-class ExpenseCategoryRepository {
+class ExpenseCategoryRepository extends Repository {
   static ExpenseCategoryRepository? _instance;
 
   final Database _database;

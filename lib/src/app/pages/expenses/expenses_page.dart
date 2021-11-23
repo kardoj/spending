@@ -4,6 +4,7 @@ import 'package:spending/src/app/components/formatters/date_formatter.dart';
 import 'package:spending/src/app/components/formatters/money_formatter.dart';
 import 'package:spending/src/app/components/heading.dart';
 import 'package:spending/src/app/pages/expenses/create_expense_page.dart';
+import 'package:spending/src/app/pages/expenses/split_expense_page.dart';
 import 'package:spending/src/domain/expense/expense_repository.dart';
 
 class ExpensesPage extends StatelessWidget {
@@ -105,6 +106,11 @@ class _ExpenseListItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(DateFormatter.format(_occurredOn)),
+          IconButton(
+            padding: EdgeInsets.zero,
+            icon: const Icon(Icons.splitscreen_outlined),
+            onPressed: () => Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext context) => SplitExpensePage(_id))),
+          ),
           IconButton(
             padding: EdgeInsets.zero,
             icon: const Icon(Icons.delete_outline),
