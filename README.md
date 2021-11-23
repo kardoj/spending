@@ -1,4 +1,4 @@
 # Spending
 
-Track your monthly spending.
+Track your spending.
 
