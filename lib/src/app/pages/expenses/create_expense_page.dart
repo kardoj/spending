@@ -1,5 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:spending/src/app/components/formatters/date_formatter.dart';
 import 'package:spending/src/app/components/forms/money_input_formatter.dart';
 import 'package:spending/src/app/components/heading.dart';
@@ -73,7 +74,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
   }
 
   Future<void> _createExpenseAndNavigateToExpenses() async {
-    await _expenseRepository.create(Decimal.parse(_amount!), _selectedExpenseCategoryId!, _occurredOn!);
+    final currentLocation = await Location().getLocation();
+    await _expenseRepository.create(Decimal.parse(_amount!), _selectedExpenseCategoryId!, _occurredOn!, currentLocation.latitude, currentLocation.longitude);
+
     await Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage()));
   }
 

@@ -7,8 +7,10 @@ class Expense extends Entity {
   final ExpenseCategory expenseCategory;
   final DateTime occurredOn;
   final DateTime createdAt;
+  final double? latitude;
+  final double? longitude;
 
-  Expense(int id, this.amount, this.expenseCategory, this.occurredOn, this.createdAt)
+  Expense(int id, this.amount, this.expenseCategory, this.occurredOn, this.createdAt, this.latitude, this.longitude)
       : super(id);
 
   static const String tableName = 'expense';

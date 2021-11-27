@@ -17,12 +17,14 @@ class ExpenseRepository extends Repository {
     return _instance ??= ExpenseRepository._(database);
   }
 
-  Future<void> create(Decimal amount, int expenseCategoryId, DateTime occurredOn) async {
+  Future<void> create(Decimal amount, int expenseCategoryId, DateTime occurredOn, double? latitude, double? longitude) async {
     await _database.insert(Expense.tableName, {
       Expense.amountFieldName: saveDecimal(amount),
       Expense.expenseCategoryIdFieldName: expenseCategoryId,
       Expense.occurredOnFieldName: saveDateTime(occurredOn),
-      Expense.createdAtFieldName: saveDateTime(DateTime.now())
+      Expense.createdAtFieldName: saveDateTime(DateTime.now()),
+      Expense.latitudeFieldName: latitude,
+      Expense.longitudeFieldName: longitude
     });
   }
 
@@ -33,6 +35,8 @@ class ExpenseRepository extends Repository {
         ' ${Expense.tableName}.${Expense.amountFieldName} as expense_amount, '
         ' ${Expense.tableName}.${Expense.occurredOnFieldName} as expense_occurred_on, '
         ' ${Expense.tableName}.${Expense.createdAtFieldName} as expense_created_at, '
+        ' ${Expense.tableName}.${Expense.latitudeFieldName} as expense_latitude, '
+        ' ${Expense.tableName}.${Expense.longitudeFieldName} as expense_longitude, '
         ' ${ExpenseCategory.tableName}.${ExpenseCategory.idFieldName} as expense_category_id, '
         ' ${ExpenseCategory.tableName}.${ExpenseCategory.nameFieldName} as expense_category_name '
         ' from ${Expense.tableName} '
@@ -54,6 +58,8 @@ class ExpenseRepository extends Repository {
         ' ${Expense.tableName}.${Expense.amountFieldName} as expense_amount, '
         ' ${Expense.tableName}.${Expense.occurredOnFieldName} as expense_occurred_on, '
         ' ${Expense.tableName}.${Expense.createdAtFieldName} as expense_created_at, '
+        ' ${Expense.tableName}.${Expense.latitudeFieldName} as expense_latitude, '
+        ' ${Expense.tableName}.${Expense.longitudeFieldName} as expense_longitude, '
         ' ${ExpenseCategory.tableName}.${ExpenseCategory.idFieldName} as expense_category_id, '
         ' ${ExpenseCategory.tableName}.${ExpenseCategory.nameFieldName} as expense_category_name '
       ' from ${Expense.tableName} '
@@ -99,6 +105,8 @@ class ExpenseRepository extends Repository {
             result['expense_category_id'] as int,
             result['expense_category_name'] as String),
         readDateTime(result['expense_occurred_on'] as int),
-        readDateTime(result['expense_created_at'] as int));
+        readDateTime(result['expense_created_at'] as int),
+        result['expense_latitude'] as double?,
+        result['expense_longitude'] as double?);
   }
 }
