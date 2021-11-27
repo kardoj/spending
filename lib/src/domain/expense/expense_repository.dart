@@ -86,27 +86,29 @@ class ExpenseRepository extends Repository {
         Expense.amountFieldName: saveDecimal(splitExpenseAmount),
         Expense.expenseCategoryIdFieldName: splitExpenseCategoryId,
         Expense.occurredOnFieldName: saveDateTime(expense.occurredOn),
-        Expense.createdAtFieldName: saveDateTime(DateTime.now())
+        Expense.createdAtFieldName: saveDateTime(DateTime.now()),
+        Expense.latitudeFieldName: expense.latitude,
+        Expense.longitudeFieldName: expense.longitude
       });
 
       await tx.update(
-          Expense.tableName,
-          { Expense.amountFieldName: saveDecimal(expense.amount - splitExpenseAmount) },
-          where: '${Expense.idFieldName} = ?',
-          whereArgs: [expense.id]);
+        Expense.tableName,
+        { Expense.amountFieldName: saveDecimal(expense.amount - splitExpenseAmount) },
+        where: '${Expense.idFieldName} = ?',
+        whereArgs: [expense.id]);
     });
   }
 
   Expense _mapSingle(Map<String, Object?> result) {
     return Expense(
-        result['expense_id'] as int,
-        readDecimal(result['expense_amount'] as String),
-        ExpenseCategory(
-            result['expense_category_id'] as int,
-            result['expense_category_name'] as String),
-        readDateTime(result['expense_occurred_on'] as int),
-        readDateTime(result['expense_created_at'] as int),
-        result['expense_latitude'] as double?,
-        result['expense_longitude'] as double?);
+      result['expense_id'] as int,
+      readDecimal(result['expense_amount'] as String),
+      ExpenseCategory(
+        result['expense_category_id'] as int,
+        result['expense_category_name'] as String),
+      readDateTime(result['expense_occurred_on'] as int),
+      readDateTime(result['expense_created_at'] as int),
+      result['expense_latitude'] as double?,
+      result['expense_longitude'] as double?);
   }
 }
