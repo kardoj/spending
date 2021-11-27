@@ -18,15 +18,6 @@ class Expense extends Entity {
   static const String expenseCategoryIdFieldName = 'expense_category_id';
   static const String occurredOnFieldName = 'occurred_on';
   static const String createdAtFieldName = 'created_at';
-
-  static String createTableSql() {
-    return 'create table $tableName ('
-        '$idFieldName integer primary key autoincrement,'
-        '$amountFieldName text not null,'
-        '$expenseCategoryIdFieldName integer not null,'
-        '$occurredOnFieldName int not null,'
-        '$createdAtFieldName int not null,'
-        'foreign key ($expenseCategoryIdFieldName) references ${ExpenseCategory.tableName}(${ExpenseCategory.idFieldName})'
-        ')';
-  }
+  static const String latitudeFieldName = 'latitude';
+  static const String longitudeFieldName = 'longitude';
 }
