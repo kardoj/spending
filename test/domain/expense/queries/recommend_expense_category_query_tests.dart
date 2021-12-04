@@ -1,23 +1,28 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:haversine_distance/haversine_distance.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:spending/src/domain/expense/expense.dart';
 import 'package:spending/src/domain/expense/expense_repository.dart';
 import 'package:spending/src/domain/expense/queries/recommend_expense_category_query.dart';
 
 import '../test_expense.dart';
-import 'recommend_expense_category_query_tests.mocks.dart';
 
-@GenerateMocks([ExpenseRepository, HaversineDistance])
+class MockExpenseRepository extends Mock implements ExpenseRepository {}
+class MockHaversineDistance extends Mock implements HaversineDistance {}
+class LocationFake extends Fake implements Location {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(LocationFake());
+  });
+
   test('execute returns null if there are no expenses', () async {
     final repositoryMock = MockExpenseRepository();
     final haversineDistanceMock = MockHaversineDistance();
     final sut = RecommendExpenseCategoryQuery(repositoryMock, haversineDistanceMock);
 
     final List<Expense> expectedExpenses = [];
-    when(repositoryMock.getAll())
+    when(() => repositoryMock.getAll())
       .thenAnswer((_) => Future.value(expectedExpenses));
 
     // Act
@@ -52,10 +57,10 @@ void main() {
       outOfRangeExpense2
     ];
 
-    when(repositoryMock.getAll())
+    when(() => repositoryMock.getAll())
       .thenAnswer((_) => Future.value(expectedExpenses));
 
-    when(haversineDistanceMock.haversine(argThat(equals()), any, Unit.METER))
+    when(() => haversineDistanceMock.haversine(any(that: isEquivalentTo(Location(latitude, longitude))), any(), Unit.METER))
       .thenReturn(justOutOfDistance);
     // when(haversineDistanceMock.haversine(argThat(equals((Location location) => location.latitude == latitude && location.longitude == longitude)), argThat(equals((Location location) => location.latitude == 10 && location.longitude == 11)), Unit.METER))
     //    .thenReturn(justOutOfDistance + 300);
