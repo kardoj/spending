@@ -51,7 +51,10 @@ class ExpenseRepository extends Repository {
     return _mapSingle(results.single);
   }
 
-  Future<List<Expense>> getAll() async {
+  Future<List<Expense>> getCurrentMonth() async {
+    final today = DateTime.now();
+    final startOfTheMonth = DateTime(today.year, today.month, 1);
+    // TODO: End of the month.
     final results = await _database.rawQuery(
       ' select '
         ' ${Expense.tableName}.${Expense.idFieldName} as expense_id, '
@@ -65,6 +68,7 @@ class ExpenseRepository extends Repository {
       ' from ${Expense.tableName} '
       ' inner join ${ExpenseCategory.tableName} '
       ' on ${ExpenseCategory.tableName}.${ExpenseCategory.idFieldName}=${Expense.tableName}.${Expense.expenseCategoryIdFieldName} '
+      ' where expense_occurred_on >= ${saveDateTime(startOfTheMonth)}'
       ' order by expense_occurred_on desc, expense_id desc '
     );
 

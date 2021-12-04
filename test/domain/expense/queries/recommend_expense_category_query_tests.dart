@@ -17,7 +17,7 @@ void main() {
     final sut = RecommendExpenseCategoryQuery(repositoryMock, haversineDistanceMock);
 
     final List<Expense> expectedExpenses = [];
-    when(repositoryMock.getAll())
+    when(repositoryMock.getCurrentMonth())
       .thenAnswer((_) => Future.value(expectedExpenses));
 
     // Act
@@ -52,7 +52,7 @@ void main() {
       outOfRangeExpense2
     ];
 
-    when(repositoryMock.getAll())
+    when(repositoryMock.getCurrentMonth())
       .thenAnswer((_) => Future.value(expectedExpenses));
 
     // when(haversineDistanceMock.haversine(argThat(equals()), any, Unit.METER))

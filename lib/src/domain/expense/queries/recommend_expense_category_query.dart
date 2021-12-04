@@ -12,7 +12,7 @@ class RecommendExpenseCategoryQuery {
   RecommendExpenseCategoryQuery(this._expenseRepository, this._haversineDistance);
 
   Future<int?> execute(DateTime dateTime, double? latitude, double? longitude) async {
-    final expenses = await _expenseRepository.getAll();
+    final expenses = await _expenseRepository.getCurrentMonth();
     if (expenses.isEmpty) {
       return null;
     }

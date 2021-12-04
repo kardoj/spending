@@ -89,6 +89,7 @@ void main() {
       final today = DateTime.now();
       expect(find.text('971.59'), findsOneWidget);
       expect(find.text('Food'), findsOneWidget);
+      // TODO: This month test will be broken in January because then it needs a padded 0.
       expect(find.text('12.${today.month}.${today.year}'), findsOneWidget);
     });
   });

@@ -51,7 +51,7 @@ class _ExpenseListState extends State<ExpenseList> {
   }
 
   Future<void> _initItems() async {
-    var expenses = await _expenseRepository.getAll();
+    var expenses = await _expenseRepository.getCurrentMonth();
 
     setState(() {
       _items = expenses

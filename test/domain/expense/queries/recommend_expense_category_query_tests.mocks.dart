@@ -46,7 +46,7 @@ class MockExpenseRepository extends _i1.Mock implements _i4.ExpenseRepository {
       Invocation.method(#find, [id]),
       returnValue: Future<_i6.Expense?>.value()) as _i5.Future<_i6.Expense?>);
   @override
-  _i5.Future<List<_i6.Expense>> getAll() =>
+  _i5.Future<List<_i6.Expense>> getCurrentMonth() =>
       (super.noSuchMethod(Invocation.method(#getAll, []),
               returnValue: Future<List<_i6.Expense>>.value(<_i6.Expense>[]))
           as _i5.Future<List<_i6.Expense>>);
