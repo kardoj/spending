@@ -55,8 +55,8 @@ void main() {
     when(repositoryMock.getAll())
       .thenAnswer((_) => Future.value(expectedExpenses));
 
-    when(haversineDistanceMock.haversine(argThat(equals()), any, Unit.METER))
-      .thenReturn(justOutOfDistance);
+    // when(haversineDistanceMock.haversine(argThat(equals()), any, Unit.METER))
+    //   .thenReturn(justOutOfDistance);
     // when(haversineDistanceMock.haversine(argThat(equals((Location location) => location.latitude == latitude && location.longitude == longitude)), argThat(equals((Location location) => location.latitude == 10 && location.longitude == 11)), Unit.METER))
     //    .thenReturn(justOutOfDistance + 300);
     // when(haversineDistanceMock.haversine(argThat(equals((Location location) => location.latitude == latitude && location.longitude == longitude)), argThat(equals((Location location) => location.latitude == 12 && location.longitude == 13)), Unit.METER))
