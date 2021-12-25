@@ -4,6 +4,7 @@ import 'package:spending/src/migrations/1_initial_migration.dart';
 import 'package:spending/src/migrations/2_add_location_to_expense.dart';
 import 'package:spending/src/migrations/3_add_a_few_expense_categories.dart';
 import 'package:spending/src/migrations/4_add_delivery_expense_category.dart';
+import 'package:spending/src/migrations/5_add_social_expense_category.dart';
 import 'package:spending/src/migrations/migration.dart';
 import 'package:spending/src/migrations/migration_applier.dart';
 import 'package:sqflite/sqflite.dart';
@@ -15,13 +16,14 @@ class DatabaseProvider {
     2: AddLocationToExpenseMigration(),
     3: AddAFewExpenseCategories(),
     4: AddDeliveryExpenseCategory(),
+    5: AddSocialExpenseCategory(),
     // Add new migrations here and don't skip any version numbers.
   };
 
   DatabaseProvider._();
 
   static Future<Database> getInstance() async {
-    _database ??= await openDatabase(Configuration.databaseFileName, version: 4,
+    _database ??= await openDatabase(Configuration.databaseFileName, version: 5,
       onConfigure: (Database database) async { await database.execute('PRAGMA foreign_keys = ON;'); },
       onUpgrade: (Database database, int oldVersion, int newVersion) async {
         MigrationApplier().goUp(_versionToMigrationMap, database, oldVersion, newVersion);
