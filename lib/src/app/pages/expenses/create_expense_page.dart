@@ -9,6 +9,8 @@ import 'package:spending/src/app/pages/expenses/expenses_page.dart';
 import 'package:spending/src/domain/expense/expense_repository.dart';
 import 'package:spending/src/domain/expense_category/expense_category_repository.dart';
 
+import 'expense_summary_page.dart';
+
 class CreateExpensePage extends StatelessWidget {
   const CreateExpensePage({Key? key}) : super(key: key);
 
@@ -154,9 +156,14 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton(
-                    child: const Text('View expenses'),
+                    child: const Text('Expenses'),
                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant)),
                     onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage()))
+                  ),
+                  ElevatedButton(
+                      child: const Text('Summary'),
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant)),
+                      onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpenseSummaryPage()))
                   ),
                   ElevatedButton(
                     child: const Text('Save'),
