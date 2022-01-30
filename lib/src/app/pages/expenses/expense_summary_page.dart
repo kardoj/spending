@@ -33,6 +33,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   late final ExpenseRepository _expenseRepository;
 
   List<_ExpenseSummaryItem> _items = [];
+  Decimal _total = Decimal.zero;
 
   @override
   void initState() {
@@ -53,6 +54,8 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     var summaryItems = await CurrentMonthExpenseSummaryQuery(_expenseRepository)
         .execute();
 
+    _total = summaryItems.fold(Decimal.zero, (total, element) => total + element.amount);
+
     summaryItems.sort((a, b) => b.amount.compareTo(a.amount));
 
     setState(() {
@@ -67,6 +70,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     return Column(
       children: [
         const Heading("Current month summary"),
+        Text("Total: " + MoneyFormatter.format(_total), textScaleFactor: 2),
         Flexible(
           child: ListView.separated(
             padding: const EdgeInsets.all(5),
