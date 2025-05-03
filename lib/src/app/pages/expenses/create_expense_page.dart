@@ -157,12 +157,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 children: [
                   ElevatedButton(
                     child: const Text('Expenses'),
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant)),
                     onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage()))
                   ),
                   ElevatedButton(
                       child: const Text('Summary'),
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant)),
                       onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpenseSummaryPage()))
                   ),
                   ElevatedButton(

@@ -37,7 +37,7 @@ dependencies:
 
   decimal:
   sqflite:
-  location: ^4.2.0
+  location: ^8.0.0
   haversine_distance:
 
 dev_dependencies:

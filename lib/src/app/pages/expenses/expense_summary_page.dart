@@ -69,8 +69,8 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Heading("Current month summary"),
-        Text("Total: " + MoneyFormatter.format(_total), textScaleFactor: 2),
+        const Heading("Summary"),
+        Text("Total: " + MoneyFormatter.format(_total), textScaler: const TextScaler.linear(2)),
         Flexible(
           child: ListView.separated(
             padding: const EdgeInsets.all(5),
