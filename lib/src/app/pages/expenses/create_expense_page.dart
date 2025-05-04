@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:spending/src/app/components/formatters/date_formatter.dart';
 import 'package:spending/src/app/components/forms/money_input_formatter.dart';
 import 'package:spending/src/app/components/heading.dart';
@@ -8,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:spending/src/app/pages/expenses/expenses_page.dart';
 import 'package:spending/src/domain/expense/expense_repository.dart';
 import 'package:spending/src/domain/expense_category/expense_category_repository.dart';
+import 'package:spending/src/infrastructure/database_exporter.dart';
 
 import 'expense_summary_page.dart';
 
@@ -82,100 +84,127 @@ class _ExpenseFormState extends State<ExpenseForm> {
     await Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage()));
   }
 
+  Future<void> _exportDatabase() async {
+    var status = await Permission.storage.status;
+    if (status.isDenied) {
+      await Permission.storage.request();
+    }
+
+    await DatabaseExporter.exportAndroid();
+  }
+
   @override
   Widget build(BuildContext context) {
     const formElementPadding = EdgeInsets.symmetric(vertical: 5, horizontal: 8);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Heading("New expense"),
-            Padding(
-              padding: formElementPadding,
-              child: DropdownButtonFormField<int>(
-                key: const ValueKey("create-expense-category-input"),
-                decoration: const InputDecoration(labelText: 'Expense category'),
-                items: _expenseCategoryOptions,
-                value: _selectedExpenseCategoryId,
-                validator: (int? value) => value == null ? 'Expense category is required' : null,
-                onChanged: (int? newValue) {
-                  setState(() {
-                    _selectedExpenseCategoryId = newValue!;
-                  });
-                },
-              )
-            ),
-            Padding(
-              padding: formElementPadding,
-              child: TextFormField(
-                key: const ValueKey("create-expense-amount-input"),
-                decoration: const InputDecoration(labelText: 'Amount'),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [MoneyInputFormatter()],
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (String? value) => value == null || value.isEmpty ? 'Amount is required' : null,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _amount = newValue!;
-                  });
-                }
-              )
-            ),
-            Padding(
-              padding: formElementPadding,
-              child: TextFormField(
-                key: const ValueKey("create-expense-occurred-on-input"),
-                controller: _occurredOnController,
-                decoration: const InputDecoration(labelText: "Occurred on"),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (String? value) => value == null || value.isEmpty ? 'Occurred on is required' : null,
-                readOnly: true,
-                onTap: () async {
-                  final now = DateTime.now();
-                  final pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: now,
-                    firstDate: now.add(const Duration(days: -90)),
-                    lastDate: now.add(const Duration(days: 90))
-                  );
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (String value) {
+              if (value == "export_database") {
+                _exportDatabase();
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem(value: 'export_database', child: Text('Export database')),
+              ];
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+          child: Form(
+              key: _formKey,
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const Heading("New expense"),
+                    Padding(
+                        padding: formElementPadding,
+                        child: DropdownButtonFormField<int>(
+                          key: const ValueKey("create-expense-category-input"),
+                          decoration: const InputDecoration(labelText: 'Expense category'),
+                          items: _expenseCategoryOptions,
+                          value: _selectedExpenseCategoryId,
+                          validator: (int? value) => value == null ? 'Expense category is required' : null,
+                          onChanged: (int? newValue) {
+                            setState(() {
+                              _selectedExpenseCategoryId = newValue!;
+                            });
+                          },
+                        )
+                    ),
+                    Padding(
+                        padding: formElementPadding,
+                        child: TextFormField(
+                            key: const ValueKey("create-expense-amount-input"),
+                            decoration: const InputDecoration(labelText: 'Amount'),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [MoneyInputFormatter()],
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            validator: (String? value) => value == null || value.isEmpty ? 'Amount is required' : null,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _amount = newValue!;
+                              });
+                            }
+                        )
+                    ),
+                    Padding(
+                      padding: formElementPadding,
+                      child: TextFormField(
+                        key: const ValueKey("create-expense-occurred-on-input"),
+                        controller: _occurredOnController,
+                        decoration: const InputDecoration(labelText: "Occurred on"),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (String? value) => value == null || value.isEmpty ? 'Occurred on is required' : null,
+                        readOnly: true,
+                        onTap: () async {
+                          final now = DateTime.now();
+                          final pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: now,
+                              firstDate: now.add(const Duration(days: -90)),
+                              lastDate: now.add(const Duration(days: 90))
+                          );
 
-                  setState(() {
-                    _occurredOn = pickedDate;
-                    _occurredOnController.text = DateFormatter.format(pickedDate);
-                  });
-                },
-              ),
-            ),
-            Padding(
-              padding: formElementPadding,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    child: const Text('Expenses'),
-                    onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage()))
-                  ),
-                  ElevatedButton(
-                      child: const Text('Summary'),
-                      onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpenseSummaryPage()))
-                  ),
-                  ElevatedButton(
-                    child: const Text('Save'),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _createExpenseAndNavigateToExpenses();
-                      }
-                    }
-                  )
-                ]
+                          setState(() {
+                            _occurredOn = pickedDate;
+                            _occurredOnController.text = DateFormatter.format(pickedDate);
+                          });
+                        },
+                      ),
+                    ),
+                    Padding(
+                        padding: formElementPadding,
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                  child: const Text('Expenses'),
+                                  onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpensesPage()))
+                              ),
+                              ElevatedButton(
+                                  child: const Text('Summary'),
+                                  onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext context) => const ExpenseSummaryPage()))
+                              ),
+                              ElevatedButton(
+                                  child: const Text('Save'),
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      _createExpenseAndNavigateToExpenses();
+                                    }
+                                  }
+                              )
+                            ]
+                        )
+                    )
+                  ]
               )
-            )
-          ]
-        )
+          )
       )
     );
   }
