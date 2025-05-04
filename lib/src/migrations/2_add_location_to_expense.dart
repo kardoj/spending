@@ -11,9 +11,9 @@ class AddLocationToExpenseMigration extends Migration {
   @override
   Future<void> up(Database database) async {
     await database.transaction((tx) async {
-      await tx.rawUpdate('alter table ${Expense.tableName} '
+      await tx.execute('alter table ${Expense.tableName} '
         ' add column ${Expense.latitudeFieldName} real default null');
-      await tx.rawUpdate('alter table ${Expense.tableName} '
+      await tx.execute('alter table ${Expense.tableName} '
         ' add column ${Expense.longitudeFieldName} real default null');
     });
   }

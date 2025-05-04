@@ -18,6 +18,17 @@ class InitialMigration extends Migration {
         '${ExpenseCategory.nameFieldName} text not null'
         ')');
 
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Food' });
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Lunch' });
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Home' });
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Car' });
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Fuel' });
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Hobbies' });
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Entertainment' });
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Health' });
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Alcohol' });
+      await tx.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Bills' });
+
       await tx.execute('create table ${Expense.tableName} ('
         '${Expense.idFieldName} integer primary key autoincrement,'
         '${Expense.amountFieldName} text not null,'

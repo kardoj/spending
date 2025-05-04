@@ -1,5 +1,4 @@
 import 'package:spending/src/configuration.dart';
-import 'package:spending/src/domain/expense_category/expense_category.dart';
 import 'package:spending/src/migrations/1_initial_migration.dart';
 import 'package:spending/src/migrations/2_add_location_to_expense.dart';
 import 'package:spending/src/migrations/3_add_a_few_expense_categories.dart';
@@ -28,34 +27,12 @@ class DatabaseProvider {
     _database ??= await openDatabase(Configuration.databaseFileName, version: 6,
       onConfigure: (Database database) async { await database.execute('PRAGMA foreign_keys = ON;'); },
       onUpgrade: (Database database, int oldVersion, int newVersion) async {
-        MigrationApplier().goUp(_versionToMigrationMap, database, oldVersion, newVersion);
-
-        // Seed data if needed after all the migrations have been run.
-        _seedDataIfNeeded(database);
+        await MigrationApplier().goUp(_versionToMigrationMap, database, oldVersion, newVersion);
       },
       onDowngrade: (Database database, int oldVersion, int newVersion) async {
-        MigrationApplier().goDown(_versionToMigrationMap, database, oldVersion, newVersion);
+        await MigrationApplier().goDown(_versionToMigrationMap, database, oldVersion, newVersion);
       });
 
     return _database!;
-  }
-
-  static Future<void> _seedDataIfNeeded(Database database) async {
-    await _seedExpenseCategoriesIfNeeded(database);
-  }
-
-  static Future<void> _seedExpenseCategoriesIfNeeded(Database database) async {
-    if ((await database.query(ExpenseCategory.tableName, columns: ['id'])).isEmpty) {
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Food' });
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Lunch' });
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Home' });
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Car' });
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Fuel' });
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Hobbies' });
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Entertainment' });
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Health' });
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Alcohol' });
-      await database.insert(ExpenseCategory.tableName, { ExpenseCategory.nameFieldName: 'Bills' });
-    }
   }
 }
